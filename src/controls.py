@@ -1,7 +1,7 @@
 import tkinter as tk
 
 class Controls :
-    def __init__(self, window: tk.Tk) -> None:
+    def __init__ (self, window: tk.Tk) -> None:
         self.forward = False
         self.left = False
         self.right = False
@@ -23,7 +23,7 @@ class Controls :
             case 'Right' : self.right = False
             case 'Down' : self.reverse = False
         
-    def __add_keyboard_listeners (self, window: Tk) :
+    def __add_keyboard_listeners (self, window: tk.Tk) :
         key_press, key_release = '<KeyPress>', '<KeyRelease>'
         window.bind(key_press, self.__handle_key_press)
         window.bind(key_release, self.__handle_key_release)

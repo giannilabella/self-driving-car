@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from car import Car
+from road import Road
 
 # Setting up Application Window
 window = tk.Tk()
@@ -9,25 +10,34 @@ window.state('zoomed')
 window.update()
 
 # Setting up Car Canvas
+car_canvas_width = 250
 car_canvas = tk.Canvas(
     window,
-    width=window.winfo_width(),
+    width=car_canvas_width,
     height=window.winfo_height(),
-    background='grey'
+    background='grey',
+    yscrollincrement=1
 )
-car_canvas.pack(side=tk.LEFT)
+car_canvas.pack()
 
+# Define road
+road = Road(car_canvas_width / 2, car_canvas_width * 0.9)
+road.draw(car_canvas)
 # Define Car
 car = Car(
     window,
-    window.winfo_width() / 2,
-    window.winfo_height() / 2,
+    road.get_lane_center(1),
+    window.winfo_height() - 100,
     45, 75, 'blue'
 )
 
-# Animate loop
-while 1 :
-    car.update()
+# Animation loop
+def animate () :
+    y_movement = car.update()
+    car_canvas.yview_scroll(-int(y_movement), what='units')
     car.draw(car_canvas)
-    
-    window.update()
+
+    car_canvas.after(10, animate)
+
+animate()
+window.mainloop()

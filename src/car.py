@@ -15,15 +15,19 @@ class Car :
         self.__controls = Controls(window)
 
         self.__speed = 0
-        self.__acceleration = 0.007
-        self.__max_speed = 0.1
+        self.__acceleration = 0.33
+        self.__max_speed = 4
         self.__max_reverse_speed = - self.__max_speed / 2
-        self.__friction = 0.0003
+        self.__friction = 0.09
 
         self.__angle = 0
-        self.__steering_angle = 0.001
+        self.__steering_angle = 0.03
 
-    def __move (self) :
+    @property
+    def y (self) :
+        return self.__y
+
+    def __move (self) -> float:
         # Acceleration car
         if self.__controls.forward :
             self.__speed += self.__acceleration
@@ -33,13 +37,13 @@ class Car :
         # Speed limiter
         if self.__speed > self.__max_speed :
             self.__speed = self.__max_speed
-        elif self.__speed < self.__max_reverse_speed :
+        if self.__speed < self.__max_reverse_speed :
             self.__speed = self.__max_reverse_speed
 
         # Car friction
         if self.__speed > 0 :
             self.__speed -= self.__friction
-        elif self.__speed < 0 :
+        if self.__speed < 0 :
             self.__speed += self.__friction
         if abs(self.__speed) < self.__friction :
             self.__speed = 0
@@ -55,10 +59,15 @@ class Car :
 
         # Move car
         self.__x -= np.sin(self.__angle) * self.__speed
-        self.__y -= np.cos(self.__angle) * self.__speed
+        y_movement = np.cos(self.__angle) * self.__speed
+        self.__y -= y_movement
 
-    def update (self) :
-        self.__move()
+        return y_movement
+
+    def update (self) -> float :
+        y_movement = self.__move()
+
+        return y_movement
         
     def draw (self, canvas: tk.Canvas) :
         half_width = self.__width / 2
