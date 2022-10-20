@@ -1,27 +1,27 @@
-from tkinter import Tk, Event
+import tkinter as tk
 
 class Controls :
-    def __init__(self, window: Tk) -> None:
-        self.__forward = False
-        self.__left = False
-        self.__right = False
-        self.__reverse = False
+    def __init__(self, window: tk.Tk) -> None:
+        self.forward = False
+        self.left = False
+        self.right = False
+        self.reverse = False
         
         self.__add_keyboard_listeners(window)
         
-    def __handle_key_press (self, event: Event) :
+    def __handle_key_press (self, event: tk.Event) :
         match (event.keysym) :
-            case 'Up' : self.__forward = True
-            case 'Left' : self.__left = True
-            case 'Right' : self.__right = True
-            case 'Down' : self.__reverse = True
+            case 'Up' : self.forward = True
+            case 'Left' : self.left = True
+            case 'Right' : self.right = True
+            case 'Down' : self.reverse = True
     
     def __handle_key_release (self, event) :
         match (event.keysym) :
-            case 'Up' : self.__forward = False
-            case 'Left' : self.__left = False
-            case 'Right' : self.__right = False
-            case 'Down' : self.__reverse = False
+            case 'Up' : self.forward = False
+            case 'Left' : self.left = False
+            case 'Right' : self.right = False
+            case 'Down' : self.reverse = False
         
     def __add_keyboard_listeners (self, window: Tk) :
         key_press, key_release = '<KeyPress>', '<KeyRelease>'

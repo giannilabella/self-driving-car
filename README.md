@@ -4,7 +4,6 @@
 
 ## :memo: Todo
 - [ ] Car realistic steering
-- [ ] Setup road
 - [ ] Car sensors
 - [ ] Collision detection
 - [ ] Simulating traffic
@@ -13,9 +12,10 @@
 - [ ] Genetic algorithm
 
 ## :gear: In Progress
-- [ ] Car simplified driving mechanics
+- [ ] Setup road
 
 ## :heavy_check_mark: Done
+- [x] Car simplified driving mechanics
 
 
 ## :page_with_curl: License
