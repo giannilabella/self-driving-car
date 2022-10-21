@@ -24,6 +24,8 @@ class Controls :
             case 'Down' : self.reverse = False
         
     def __add_keyboard_listeners (self, window: tk.Tk) :
-        key_press, key_release = '<KeyPress>', '<KeyRelease>'
+        key_press = '<KeyPress>'
+        key_release = '<KeyRelease>'
+        
         window.bind(key_press, self.__handle_key_press)
         window.bind(key_release, self.__handle_key_release)

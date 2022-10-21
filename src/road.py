@@ -1,6 +1,7 @@
 import tkinter as tk
 
-from utils import Point, lerp
+from utils import lerp
+from _types import Point, Line, LineList, LineTupleCanvasIdList
 
 class Road :
     def __init__ (self, x: float, width: float, lane_count = 3) -> None:
@@ -19,9 +20,9 @@ class Road :
         top_right = Point(self.__right, self.__top)
         bottom_left = Point(self.__left, self.__bottom)
         bottom_right = Point(self.__right, self.__bottom)
-        self.__borders = [
-            [top_left, bottom_left],
-            [top_right, bottom_right]
+        self.__borders: LineList = [
+            Line(top_left, bottom_left),
+            Line(top_right, bottom_right)
         ]
         
         self.__animated_line_y = 0
@@ -42,7 +43,7 @@ class Road :
         self.__animated_line_y += vertical_movement
         if self.__animated_line_y >= canvas_height :
             reset = True
-            self.__animated_line_y = 0
+            self.__animated_line_y -= canvas_height
         else :
             reset = False
         
@@ -57,7 +58,7 @@ class Road :
                 canvas.move(lines_tuple[1], 0, vertical_movement)
 
     def draw (self, canvas: tk.Canvas) :
-        self.__dashed_lines_ids: list[tuple[tk._CanvasItemId, tk._CanvasItemId]] = []
+        self.__dashed_lines_ids: LineTupleCanvasIdList = []
 
         for i in range(1, self.__lane_count) :
             line_x = lerp(
@@ -70,14 +71,14 @@ class Road :
                     line_x, -canvas.winfo_height(),
                     line_x, 0,
                     fill='white', width=5,
-                    dash=(255, 5) # dash - 25 / gap - 5
+                    dash=(255, 5)
                 ),
                 canvas.create_line(
                     line_x, 0,
                     line_x, canvas.winfo_height(),
                     fill='white', width=5,
-                    dash=(255, 5) # dash - 25 / gap - 5
-                ),
+                    dash=(255, 5)
+                )
             ))
             
         for border in self.__borders :
