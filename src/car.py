@@ -15,19 +15,23 @@ class Car :
         self.__controls = Controls(window)
 
         self.__speed = 0
-        self.__acceleration = 0.33
-        self.__max_speed = 4
+        self.__acceleration = 0.25
+        self.__max_speed = 5
         self.__max_reverse_speed = - self.__max_speed / 2
-        self.__friction = 0.09
+        self.__friction = 0.05
 
         self.__angle = 0
         self.__steering_angle = 0.03
 
     @property
+    def x (self) :
+        return self.__x
+
+    @property
     def y (self) :
         return self.__y
 
-    def __move (self) -> float:
+    def __move (self) -> tuple[float, float]:
         # Acceleration car
         if self.__controls.forward :
             self.__speed += self.__acceleration
@@ -58,39 +62,46 @@ class Car :
                 self.__angle -= self.__steering_angle * flip
 
         # Move car
-        self.__x -= np.sin(self.__angle) * self.__speed
+        x_movement = np.sin(self.__angle) * self.__speed
         y_movement = np.cos(self.__angle) * self.__speed
+        self.__x -= x_movement
         self.__y -= y_movement
 
-        return y_movement
+        return x_movement, y_movement
 
-    def update (self) -> float :
-        y_movement = self.__move()
+    def update (self) -> tuple[float, float] :
+        car_movement = self.__move()
 
-        return y_movement
+        return car_movement
         
-    def draw (self, canvas: tk.Canvas) :
+    def draw (self, canvas: tk.Canvas, car_fixed_y: float | None = None) :
+        # Calculate temporary constants
         half_width = self.__width / 2
         half_height = self.__height / 2
         sin = np.sin(self.__angle)
         cos = np.cos(self.__angle)
+        
+        if car_fixed_y is None :
+            car_y = self.__y
+        else :
+            car_y = car_fixed_y
 
         # Calculate Car corners
         top_left = [
             self.__x - half_width*cos - half_height*sin,
-            self.__y - half_height*cos + half_width*sin,
+            car_y - half_height*cos + half_width*sin,
         ]
         top_right = [
             self.__x + half_width*cos - half_height*sin,
-            self.__y - half_height*cos - half_width*sin,
+            car_y - half_height*cos - half_width*sin,
         ]
         bottom_right = [
             self.__x + half_width*cos + half_height*sin,
-            self.__y + half_height*cos - half_width*sin,
+            car_y + half_height*cos - half_width*sin,
         ]
         bottom_left = [
             self.__x - half_width*cos + half_height*sin,
-            self.__y + half_height*cos + half_width*sin,
+            car_y + half_height*cos + half_width*sin,
         ]
         
         # Erase Previous Car Position
