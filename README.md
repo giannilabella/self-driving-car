@@ -4,18 +4,18 @@
 
 ## :memo: Todo
 - [ ] Car realistic steering
-- [ ] Simulating traffic
 - [ ] Neural network
 - [ ] Parallelization
 - [ ] Genetic algorithm
 
 ## :gear: In Progress
-- [ ] Collision detection
+- [ ] Simulating traffic
 
 ## :heavy_check_mark: Done
 - [x] Car simplified driving mechanics
 - [x] Setup road
 - [x] Car sensors
+- [x] Collision detection
 
 
 ## :page_with_curl: License

@@ -13,7 +13,7 @@ def get_intersection (A: Point, B: Point, C: Point, D: Point) -> Reading | None 
 
     ab = b - a
     ac = c - a
-    cd = d - C
+    cd = d - c
     
     ab_cross_cd = np.cross(ab, cd)
     
@@ -27,7 +27,7 @@ def get_intersection (A: Point, B: Point, C: Point, D: Point) -> Reading | None 
     t1 = float(ac_cross_cd / ab_cross_cd)
     t2 = float(ac_cross_ab / ab_cross_cd)
 
-    # Check if intersection is in line segments AB and CD
+    # Check if intersection is between segments AB and CD
     if not 0 <= t1 <= 1 or not 0 <= t2 <= 1 :
         return None
 
@@ -36,3 +36,15 @@ def get_intersection (A: Point, B: Point, C: Point, D: Point) -> Reading | None 
         lerp(A.y, B.y, t1)
     )
     return Reading(I, t1)
+
+def polys_intersect (poly_1: list[Point], poly_2: list[Point]) -> bool :
+    for index_1, point_1 in enumerate(poly_1) :
+        for index_2, point_2 in enumerate(poly_2) :
+            touch = get_intersection(
+                point_1,
+                poly_1[(index_1 + 1) % len(poly_1)],
+                point_2,
+                poly_2[(index_2 + 1) % len(poly_2)]
+            )
+            if touch : return True
+    return False

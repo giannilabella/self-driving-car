@@ -75,35 +75,36 @@ class Sensor :
 
         self.__get_readings(road_borders)
 
-    def draw (self, canvas: tk.Canvas, car_fixed_y: float | None = None) :
+    def draw (self, canvas: tk.Canvas, fixed_x: float | None = None, fixed_y: float | None = None) :
         # Erase previous rays
         for ray_id in self.__rays_ids :
             canvas.delete(ray_id)
 
         self.__rays_ids = []
 
-        # Calculate y position for drawing
-        y_offset = 0
-        if car_fixed_y is not None :
-            y_offset = car_fixed_y - self.__car.y
+        # Calculate position offset for drawing
+        x_offset = fixed_x - self.__car.x if fixed_x else 0
+        y_offset = fixed_y - self.__car.y if fixed_y else 0
 
         # Draw Rays
         for ray, reading in zip(self.__rays, self.__readings) :
-            ray_end = ray.end
+            intersection = ray.end
             if reading :
-                ray_end = reading.point
+                intersection = reading.point
 
             self.__rays_ids.extend([
                 canvas.create_line(
-                    ray.end.x, ray.end.y + y_offset,
-                    ray_end.x, ray_end.y + y_offset,
-                    fill = 'black',
-                    width = 2
+                    ray.end.x + x_offset,
+                    ray.end.y + y_offset,
+                    intersection.x + x_offset,
+                    intersection.y + y_offset,
+                    fill = 'black', width = 2
                 ),
                 canvas.create_line(
-                    ray.start.x, ray.start.y + y_offset,
-                    ray_end.x, ray_end.y + y_offset,
-                    fill = 'yellow',
-                    width = 2
+                    ray.start.x + x_offset,
+                    ray.start.y + y_offset,
+                    intersection.x + x_offset,
+                    intersection.y + y_offset,
+                    fill = 'yellow', width = 2
                 )
             ])

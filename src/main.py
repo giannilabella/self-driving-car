@@ -39,7 +39,7 @@ car = Car(
 # Animation loop
 def animate () :
     _, car_y_movement = car.update(road.borders)
-    car.draw(car_canvas, car_initial_y)
+    car.draw(car_canvas, fixed_y = car_initial_y)
     
     road.animate_lines(car_canvas, car_y_movement)
     
