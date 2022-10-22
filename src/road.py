@@ -40,22 +40,32 @@ class Road :
     def animate_lines (self, canvas: tk.Canvas, vertical_movement: float) :
         canvas_height = canvas.winfo_height()
         
+        # Check if car is approaching canvas limits
+        approaching = None
         self.__animated_line_y += vertical_movement
-        if self.__animated_line_y >= canvas_height :
-            reset = True
+        if self.__animated_line_y >= canvas_height / 2 :
+            approaching = 'TOP'
             self.__animated_line_y -= canvas_height
-        else :
-            reset = False
+        elif self.__animated_line_y <= -canvas_height / 2 :
+            approaching = 'BOTTOM'
+            self.__animated_line_y += canvas_height
         
         for tuple_index, lines_tuple in enumerate(self.__dashed_lines_ids) :
-            if reset :
-                canvas.move(lines_tuple[0], 0, vertical_movement)
-                canvas.move(lines_tuple[1], 0, -2 * canvas_height)
+            # Move lines to simulate car movement
+            canvas.move(lines_tuple[0], 0, vertical_movement)
+            canvas.move(lines_tuple[1], 0, vertical_movement)
+            canvas.move(lines_tuple[2], 0, vertical_movement)
+            
+            if approaching == 'TOP' :
+                # Move 3rd line to top and swap positions
+                canvas.move(lines_tuple[2], 0, -3 * canvas_height - vertical_movement)
+                self.__dashed_lines_ids[tuple_index] = lines_tuple[2], lines_tuple[0], lines_tuple[1]
+
+            elif approaching == 'BOTTOM' :
+                # Move 1st line to bottom and swap positions
+                canvas.move(lines_tuple[0], 0, 3 * canvas_height - vertical_movement)
+                self.__dashed_lines_ids[tuple_index] = lines_tuple[1], lines_tuple[2], lines_tuple[0]
                 
-                self.__dashed_lines_ids[tuple_index] = lines_tuple[1], lines_tuple[0]
-            else :
-                canvas.move(lines_tuple[0], 0, vertical_movement)
-                canvas.move(lines_tuple[1], 0, vertical_movement)
 
     def draw (self, canvas: tk.Canvas) :
         self.__dashed_lines_ids: LineTupleCanvasIdList = []
@@ -76,6 +86,12 @@ class Road :
                 canvas.create_line(
                     line_x, 0,
                     line_x, canvas.winfo_height(),
+                    fill='white', width=5,
+                    dash=(255, 5)
+                ),
+                canvas.create_line(
+                    line_x, canvas.winfo_height(),
+                    line_x, 2 * canvas.winfo_height(),
                     fill='white', width=5,
                     dash=(255, 5)
                 )
