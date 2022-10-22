@@ -1,13 +1,23 @@
 import tkinter as tk
 
+from _types import ControlType
+
 class Controls :
-    def __init__ (self, window: tk.Tk) -> None:
+    def __init__ (self, type: ControlType, window: tk.Tk | None) -> None :
         self.forward = False
         self.left = False
         self.right = False
         self.reverse = False
         
-        self.__add_keyboard_listeners(window)
+        match type :
+            case 'KEYS' :
+                if not window :
+                    raise ValueError('window is required for control type "KEYS"')
+
+                self.__add_keyboard_listeners(window)
+                
+            case 'DUMMY' :
+                self.forward = True
         
     def __handle_key_press (self, event: tk.Event) :
         match (event.keysym) :

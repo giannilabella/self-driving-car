@@ -30,17 +30,31 @@ road.draw(car_canvas)
 # Define Car
 car_initial_y = window.winfo_height() * 0.85
 car = Car(
-    window,
     road.get_lane_center(1),
     car_initial_y,
-    45, 75, 'blue'
+    45, 75, 'KEYS', window
 )
+# Define Traffic
+traffic = [
+    Car(road.get_lane_center(1), window.winfo_height() * 0.15, 45, 75, 'DUMMY', max_speed = 3)
+]
 
 # Animation loop
 def animate () :
-    _, car_y_movement = car.update(road.borders)
-    car.draw(car_canvas, fixed_y = car_initial_y)
+    # Update Cars
+    for vehicle in traffic :
+        vehicle.update([], [])
+
+    _, car_y_movement = car.update(road.borders, traffic)
+
+    # Draw Cars
+    for vehicle in traffic :
+        vehicle_y = vehicle.y - car.y + car_initial_y
+        vehicle.draw(car_canvas, 'darkorange', fixed_y = vehicle_y)
+
+    car.draw(car_canvas, 'blue', fixed_y = car_initial_y)
     
+    # Animate road
     road.animate_lines(car_canvas, car_y_movement)
     
     car_canvas.after(10, animate)

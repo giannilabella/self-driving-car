@@ -1,4 +1,3 @@
-# Named tuples
 from typing import NamedTuple
 
 class Point (NamedTuple) :
@@ -13,8 +12,10 @@ class Reading (NamedTuple) :
     point: Point
     offset: float
 
-# List types
 LineList = list[Line]
 ReadingList = list[Reading | None]
 CanvasIdList = list[int]
 LineTupleCanvasIdList = list[tuple[int, int]]
+
+from typing import Literal
+ControlType = Literal['KEYS', 'DUMMY', 'AI']

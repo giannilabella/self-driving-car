@@ -1,32 +1,39 @@
 import numpy as np
 import tkinter as tk
+from typing import Literal
 
 from sensor import Sensor
 from controls import Controls
 from utils import polys_intersect
-from _types import Point, LineList
+from _types import Point, LineList, ControlType
 
 class Car :
-    def __init__ (self, window: tk.Tk, x: float, y: float, width: float, height: float, color: str) -> None:
+    def __init__ (self,
+        x: float, y: float,
+        width: float, height: float,
+        control_type: ControlType,
+        window: tk.Tk | None = None,
+        max_speed: float = 5
+    ) -> None :
         self.__x = x
         self.__y = y
         self.__width = width
         self.__height = height
-        self.__color = color
 
         # Car Mechanics Parameters
-        self.__speed = 0
         self.__acceleration = 0.25
-        self.__max_speed = 5
+        self.__max_speed = max_speed
         self.__max_reverse_speed = - self.__max_speed / 2
         self.__friction = 0.05
-        self.__angle = 0
         self.__steering_angle = 0.03
+
+        self.__speed = 0
+        self.__angle = 0
         self.__damaged = False
 
+        self.__sensor = Sensor(self) if control_type != 'DUMMY' else None
         self.__car_id: int | None = None
-        self.__sensor = Sensor(self)
-        self.__controls = Controls(window)
+        self.__controls = Controls(control_type, window)
 
     @property
     def x (self) :
@@ -39,6 +46,10 @@ class Car :
     @property
     def angle (self) :
         return self.__angle
+
+    @property
+    def polygon (self) :
+        return self.__polygon
 
     def __move (self) -> tuple[float, float] :
         # Acceleration car
@@ -78,25 +89,32 @@ class Car :
 
         return x_movement, y_movement
     
-    def __assess_damage (self, road_borders: LineList) -> bool :
+    def __assess_damage (self, road_borders: LineList, traffic: list['Car']) -> bool :
         for border in road_borders :
             if polys_intersect(
                 self.__polygon,
                 [*border]
             ) : return True
+
+        for vehicle in traffic :
+            if polys_intersect(
+                self.__polygon,
+                vehicle.polygon
+            ) : return True
             
         return False
 
-    def update (self, road_borders: LineList) -> tuple[float, float] :
+    def update (self, road_borders: LineList, traffic: list['Car']) -> tuple[float, float] :
         # Update Car
         car_movement = (0, 0)
         if not self.__damaged :
             car_movement = self.__move()
             self.__polygon = self.__create_polygon()
-            self.__damaged = self.__assess_damage(road_borders)
+            self.__damaged = self.__assess_damage(road_borders, traffic)
 
         #Update Sensor
-        self.__sensor.update(road_borders)
+        if self.__sensor :
+            self.__sensor.update(road_borders, traffic)
 
         return car_movement
     
@@ -134,6 +152,7 @@ class Car :
         
     def draw (self,
         canvas: tk.Canvas,
+        color: str,
         fixed_x: float | None = None,
         fixed_y: float | None = None
     ) :
@@ -145,7 +164,7 @@ class Car :
             canvas.delete(self.__car_id)
 
         # Draw Car Polygon
-        car_color = self.__color if not self.__damaged else 'black'
+        car_color = color if not self.__damaged else 'black'
         self.__car_id = canvas.create_polygon(
             *corners,
             outline = car_color,
@@ -153,4 +172,5 @@ class Car :
         )
 
         # Draw Sensor
-        self.__sensor.draw(canvas, fixed_x, fixed_y)
+        if self.__sensor :
+            self.__sensor.draw(canvas, fixed_x, fixed_y)

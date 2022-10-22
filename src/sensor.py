@@ -40,7 +40,7 @@ class Sensor :
 
             self.__rays.append(Line(start, end))
 
-    def __get_single_reading (self, ray: Line, road_borders: LineList) -> Reading | None :
+    def __get_single_reading (self, ray: Line, road_borders: LineList, traffic: list['Car']) -> Reading | None :
         touches = []
 
         for border in road_borders :
@@ -53,6 +53,19 @@ class Sensor :
             if touch :
                 touches.append(touch)
 
+        for vehicle in traffic :
+            for point_index, point in enumerate(vehicle.polygon) :
+                touch = get_intersection(
+                    ray.start,
+                    ray.end,
+                    point,
+                    vehicle.polygon[
+                        (point_index + 1) % len(vehicle.polygon)
+                    ]
+                )
+                if touch :
+                    touches.append(touch)
+
         if len(touches) == 0 :
             return None
         else :
@@ -60,20 +73,20 @@ class Sensor :
             min_offset = min(offsets)
             return [touch for touch in touches if touch.offset == min_offset][0]
 
-    def __get_readings (self, road_borders: LineList) :
+    def __get_readings (self, road_borders: LineList, traffic: list['Car']) :
         self.__readings = []
 
         for ray in self.__rays :
             self.__readings.append(
                 self.__get_single_reading(
-                    ray, road_borders
+                    ray, road_borders, traffic
                 )
             )
 
-    def update (self, road_borders: LineList) :
+    def update (self, road_borders: LineList, traffic: list['Car']) :
         self.__cast_rays()
 
-        self.__get_readings(road_borders)
+        self.__get_readings(road_borders, traffic)
 
     def draw (self, canvas: tk.Canvas, fixed_x: float | None = None, fixed_y: float | None = None) :
         # Erase previous rays
