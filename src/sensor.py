@@ -14,13 +14,21 @@ class Sensor :
     def __init__ (self, car: 'Car') -> None:
         self.__car = car
         self.__ray_count = 5
-        self.__ray_length = 150
+        self.__ray_length = 175
         self.__ray_spread = np.pi / 2
 
         self.__rays: LineList = []
         self.__rays_ids: CanvasIdList = []
 
         self.__readings: ReadingList = []
+
+    @property
+    def ray_count (self) :
+        return self.__ray_count
+
+    @property
+    def readings (self) :
+        return self.__readings
 
     def __cast_rays (self) :
         self.__rays = []

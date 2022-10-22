@@ -8,7 +8,7 @@
 - [ ] Genetic algorithm
 
 ## :gear: In Progress
-- [ ] Neural network
+- [ ] Neural network visualizer
 
 ## :heavy_check_mark: Done
 - [x] Car simplified driving mechanics
@@ -16,6 +16,7 @@
 - [x] Car sensors
 - [x] Collision detection
 - [x] Simulating traffic
+- [x] Neural network
 
 
 ## :page_with_curl: License

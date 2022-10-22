@@ -12,10 +12,16 @@ class Reading (NamedTuple) :
     point: Point
     offset: float
 
+class ControlOutput (NamedTuple) :
+    forward: bool
+    left: bool
+    right: bool
+    reverse: bool
+
 LineList = list[Line]
 ReadingList = list[Reading | None]
 CanvasIdList = list[int]
-LineTupleCanvasIdList = list[tuple[int, int]]
+LineTupleCanvasIdList = list[tuple[int, int, int]]
 
 from typing import Literal
 ControlType = Literal['KEYS', 'DUMMY', 'AI']

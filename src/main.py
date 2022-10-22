@@ -32,7 +32,7 @@ car_initial_y = window.winfo_height() * 0.85
 car = Car(
     road.get_lane_center(1),
     car_initial_y,
-    45, 75, 'KEYS', window
+    45, 75, 'AI', window
 )
 # Define Traffic
 traffic = [

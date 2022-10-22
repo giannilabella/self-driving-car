@@ -1,9 +1,9 @@
 import numpy as np
 import tkinter as tk
-from typing import Literal
 
 from sensor import Sensor
 from controls import Controls
+from network import NeuralNetwork
 from utils import polys_intersect
 from _types import Point, LineList, ControlType
 
@@ -31,9 +31,12 @@ class Car :
         self.__angle = 0
         self.__damaged = False
 
-        self.__sensor = Sensor(self) if control_type != 'DUMMY' else None
         self.__car_id: int | None = None
         self.__controls = Controls(control_type, window)
+        self.__sensor = Sensor(self) if control_type != 'DUMMY' else None
+        self.__brain = NeuralNetwork(
+            [self.__sensor.ray_count, 6, 4]
+        ) if control_type == 'AI' and self.__sensor else None
 
     @property
     def x (self) :
@@ -112,9 +115,23 @@ class Car :
             self.__polygon = self.__create_polygon()
             self.__damaged = self.__assess_damage(road_borders, traffic)
 
-        #Update Sensor
+        # Update Sensor
         if self.__sensor :
             self.__sensor.update(road_borders, traffic)
+            
+        # Use Brain
+        if self.__brain and self.__sensor :
+            offsets = [
+                1 - reading.offset
+                if reading is not None
+                else 0
+                for reading in self.__sensor.readings
+            ]
+            output = NeuralNetwork.feed_forward(offsets, self.__brain)
+            self.__controls.forward = output.forward
+            self.__controls.left = output.left
+            self.__controls.right = output.right
+            self.__controls.reverse = output.reverse
 
         return car_movement
     

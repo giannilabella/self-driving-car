@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 
 from _types import Point, Reading
 
@@ -48,3 +49,6 @@ def polys_intersect (poly_1: list[Point], poly_2: list[Point]) -> bool :
             )
             if touch : return True
     return False
+
+def sigmoid (x: npt.NDArray[np.float64], gain = 1) :
+    return (1 / (1 + np.exp(-gain * x))).astype(np.float64)
