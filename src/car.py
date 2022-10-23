@@ -36,7 +36,7 @@ class Car :
         self.__sensor = Sensor(self) if control_type != 'DUMMY' else None
         self.__brain = NeuralNetwork(
             [self.__sensor.ray_count, 6, 4]
-        ) if control_type == 'AI' and self.__sensor else None
+        ) if control_type == 'AI' and self.__sensor is not None else None
 
     @property
     def x (self) :
@@ -116,15 +116,14 @@ class Car :
             self.__damaged = self.__assess_damage(road_borders, traffic)
 
         # Update Sensor
-        if self.__sensor :
+        if self.__sensor is not None :
             self.__sensor.update(road_borders, traffic)
             
         # Use Brain
-        if self.__brain and self.__sensor :
+        if self.__brain is not None and self.__sensor is not None :
             offsets = [
                 1 - reading.offset
-                if reading is not None
-                else 0
+                if reading is not None else 0
                 for reading in self.__sensor.readings
             ]
             output = NeuralNetwork.feed_forward(offsets, self.__brain)
@@ -144,8 +143,8 @@ class Car :
         half_height = self.__height / 2
         sin = np.sin(self.__angle)
         cos = np.cos(self.__angle)
-        car_x = fixed_x if fixed_x else self.__x
-        car_y = fixed_y if fixed_y else self.__y
+        car_x = fixed_x if fixed_x is not None else self.__x
+        car_y = fixed_y if fixed_y is not None else self.__y
         
         # Calculate Car corners
         return [
@@ -189,5 +188,5 @@ class Car :
         )
 
         # Draw Sensor
-        if self.__sensor :
+        if self.__sensor is not None :
             self.__sensor.draw(canvas, fixed_x, fixed_y)

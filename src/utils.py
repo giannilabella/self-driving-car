@@ -47,7 +47,7 @@ def polys_intersect (poly_1: list[Point], poly_2: list[Point]) -> bool :
                 point_2,
                 poly_2[(index_2 + 1) % len(poly_2)]
             )
-            if touch : return True
+            if touch is not None : return True
     return False
 
 def sigmoid (x: npt.NDArray[np.float64], gain = 1) :

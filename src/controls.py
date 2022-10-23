@@ -11,7 +11,7 @@ class Controls :
         
         match type :
             case 'KEYS' :
-                if not window :
+                if window is None :
                     raise ValueError('window is required for control type "KEYS"')
 
                 self.__add_keyboard_listeners(window)

@@ -58,7 +58,7 @@ class Sensor :
                 border.start,
                 border.end
             )
-            if touch :
+            if touch is not None :
                 touches.append(touch)
 
         for vehicle in traffic :
@@ -71,7 +71,7 @@ class Sensor :
                         (point_index + 1) % len(vehicle.polygon)
                     ]
                 )
-                if touch :
+                if touch is not None :
                     touches.append(touch)
 
         if len(touches) == 0 :
@@ -104,13 +104,13 @@ class Sensor :
         self.__rays_ids = []
 
         # Calculate position offset for drawing
-        x_offset = fixed_x - self.__car.x if fixed_x else 0
-        y_offset = fixed_y - self.__car.y if fixed_y else 0
+        x_offset = fixed_x - self.__car.x if fixed_x is not None else 0
+        y_offset = fixed_y - self.__car.y if fixed_y is not None else 0
 
         # Draw Rays
         for ray, reading in zip(self.__rays, self.__readings) :
             intersection = ray.end
-            if reading :
+            if reading is not None :
                 intersection = reading.point
 
             self.__rays_ids.extend([
