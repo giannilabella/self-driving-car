@@ -8,16 +8,20 @@ class NeuralNetwork :
     def __init__(self, neuron_counts: list[int]) -> None:
         self.__levels: list[Level] = []
 
-        for index in range(len(neuron_counts) - 1) :
+        for index, neuron_count in enumerate(neuron_counts[:-1]) :
             is_hidden = True if index + 1 != len(neuron_counts) - 1 else False
 
             self.__levels.append(
                 Level(
-                    neuron_counts[index],
+                    neuron_count,
                     neuron_counts[index + 1],
                     is_hidden
                 )
             )
+
+    @property
+    def levels (self) :
+        return self.__levels
 
     @staticmethod
     def feed_forward (given_inputs: list[float], network: 'NeuralNetwork') -> ControlOutput :
@@ -44,6 +48,26 @@ class Level :
         self.__is_hidden_layer = is_hidden_layer
 
         self.__randomize(self)
+
+    @property
+    def inputs (self) -> list[float] :
+        return self.__inputs.flat[:].tolist()
+
+    @property
+    def outputs (self) -> list[float] :
+        return self.__outputs.flat[:].tolist()
+
+    @property
+    def biases (self) -> list[float] :
+        return self.__biases.flat[:].tolist()
+
+    @property
+    def weights (self) -> list[list[float]] :
+        return self.__weights.tolist()
+
+    @property
+    def is_hidden_layer (self) :
+        return self.__is_hidden_layer
 
     @staticmethod
     def __randomize (level: 'Level') :
@@ -81,7 +105,11 @@ class Level :
         # Calculate: W.x + b
         np.add(weight_dot_input, level.__biases, out = level.__outputs)
 
-        if level.__is_hidden_layer :
-            return sigmoid(level.__outputs, 5)
-        else :
-            return (level.__outputs >= 0).astype(np.float64)
+        # Sigmoid Neuron Output
+        level.__outputs = sigmoid(level.__outputs)
+
+        if not level.__is_hidden_layer :
+            # Activation Function Output
+            level.__outputs = (level.__outputs >= 0.5).astype(np.float64)
+
+        return level.__outputs

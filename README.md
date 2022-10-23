@@ -3,12 +3,10 @@
  Made with python, based on [Dr. Radu Mariescu-Istodor Course](https://www.youtube.com/watch?v=Rs_rAxEsAvI).
 
 ## :memo: Todo
-- [ ] Car realistic steering
-- [ ] Parallelization
 - [ ] Genetic algorithm
 
 ## :gear: In Progress
-- [ ] Neural network visualizer
+- [ ] Parallelization
 
 ## :heavy_check_mark: Done
 - [x] Car simplified driving mechanics
@@ -17,6 +15,7 @@
 - [x] Collision detection
 - [x] Simulating traffic
 - [x] Neural network
+- [x] Neural network visualizer
 
 
 ## :page_with_curl: License

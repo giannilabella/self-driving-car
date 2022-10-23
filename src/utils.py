@@ -52,3 +52,17 @@ def polys_intersect (poly_1: list[Point], poly_2: list[Point]) -> bool :
 
 def sigmoid (x: npt.NDArray[np.float64], gain = 1) :
     return (1 / (1 + np.exp(-gain * x))).astype(np.float64)
+
+def get_hex_color (value: float) -> str :
+    # Positive: yellow, Negative: blue
+    color = (255, 255, 0) if value >= 0 else (0, 0, 255)
+    alpha = abs(value)
+
+    return rgba_to_hex(*color, alpha)
+
+def rgba_to_hex (red: int, green: int, blue: int, alpha: float = 1) -> str :
+    red = int(red * alpha)
+    green = int(green * alpha)
+    blue = int(blue * alpha)
+
+    return f'#{red:02x}{green:02x}{blue:02x}'

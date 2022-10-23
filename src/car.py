@@ -11,6 +11,7 @@ class Car :
     def __init__ (self,
         x: float, y: float,
         width: float, height: float,
+        color: str,
         control_type: ControlType,
         window: tk.Tk | None = None,
         max_speed: float = 5
@@ -19,6 +20,7 @@ class Car :
         self.__y = y
         self.__width = width
         self.__height = height
+        self.__color = color
 
         # Car Mechanics Parameters
         self.__acceleration = 0.25
@@ -53,6 +55,10 @@ class Car :
     @property
     def polygon (self) :
         return self.__polygon
+
+    @property
+    def brain (self) :
+        return self.__brain
 
     def __move (self) -> tuple[float, float] :
         # Acceleration car
@@ -168,19 +174,18 @@ class Car :
         
     def draw (self,
         canvas: tk.Canvas,
-        color: str,
         fixed_x: float | None = None,
         fixed_y: float | None = None
     ) :
         # Get Car corners
         corners = self.__create_polygon(fixed_x, fixed_y)
         
-        # Erase Previous Car Position
+        # Erase Previously Drawn Car
         if self.__car_id is not None :
             canvas.delete(self.__car_id)
 
         # Draw Car Polygon
-        car_color = color if not self.__damaged else 'black'
+        car_color = self.__color if not self.__damaged else 'black'
         self.__car_id = canvas.create_polygon(
             *corners,
             outline = car_color,
